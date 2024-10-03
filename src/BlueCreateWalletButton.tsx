@@ -1,6 +1,6 @@
+import { useCallback } from 'react';
 import { useConnect, useDisconnect, useAccount } from 'wagmi';
 import { CoinbaseWalletLogo } from './CoinbaseWalletLogo';
-import { useCallback } from 'react'; // {{ edit_1 }}
 
 const buttonStyles = {
   background: 'transparent',
@@ -21,10 +21,17 @@ const buttonStyles = {
   color: 'white',
 };
 
+const addressStyles = {
+  marginTop: '10px',
+  fontFamily: 'Arial, sans-serif',
+  fontSize: '14px',
+  wordBreak: 'break-all' as const,
+};
+
 export function BlueCreateWalletButton() {
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const handleClick = useCallback(() => {
     if (isConnected) {
@@ -40,9 +47,16 @@ export function BlueCreateWalletButton() {
   }, [connectors, connect, disconnect, isConnected]);
 
   return (
-    <button style={buttonStyles} onClick={handleClick}>
-      <CoinbaseWalletLogo />
-      {isConnected ? 'Disconnect' : 'Create Wallet'}
-    </button>
+    <div>
+      <button style={buttonStyles} onClick={handleClick}>
+        <CoinbaseWalletLogo />
+        {isConnected ? 'Disconnect' : 'Create Wallet'}
+      </button>
+      {isConnected && address && (
+        <div style={addressStyles}>
+          Wallet Address: {address}
+        </div>
+      )}
+    </div>
   );
 }
